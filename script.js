@@ -8,7 +8,7 @@ canvas.height = height;
 const ctx = canvas.getContext("2d");
 let squares = [];
 const totalSquares = 80;
-const squareSize = 10;
+const squareSize = 20;
 const gap = 5;
 
 function lerp(A, B, t) {
@@ -34,9 +34,9 @@ class Square {
     this.x = x;
     this.y = y;
     this.size = size;
-    this.t = Math.random();
-    this.j = Math.random();
-    this.round = Math.random() > 0.5 ? 1 : 0;
+    this.t = 0;
+    this.j = 0;
+    this.round = 1;
     this.increment = 0.05;
   }
   draw(ctx) {
@@ -99,20 +99,20 @@ class Square {
 squares = drawSquares();
 const ln = squares.length;
 squares.forEach((square, index) => {
-  if (index % 2 == 0) {
-    square.t = Math.abs(Math.cos(index));
-    square.j = Math.abs(Math.cos(index));
-  } else {
-    square.t = Math.abs(Math.sin(ln - index));
-    square.j = Math.abs(Math.sin(ln - index));
-  }
+  // if (index % 2 == 0) {
+  square.t = Math.abs(Math.sin(index) + Math.cos(index));
+  square.j = Math.abs(Math.cos(index) + Math.sin(index));
+  // } else {
+  // square.t = Math.abs(Math.sin(ln - index));
+  // square.j = Math.abs(Math.sin(ln - index));
+  // }
 });
 function animate() {
   ctx.clearRect(0, 0, width, height);
 
   ctx.fillStyle = "white";
   squares.forEach((square, index) => {
-    square.draw(ctx);
+    // square.draw(ctx);
     square.drawPont(ctx);
   });
 
