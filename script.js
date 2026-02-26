@@ -1,14 +1,18 @@
 const canvas = document.getElementById("canvas");
-const width = 700;
-const height = 700;
+const width = 500;
+const height = 500;
+const speed = 50;
+const mult = 8;
 
-canvas.width = width;
-canvas.height = height;
+canvas.width = width + 10;
+canvas.height = height + 10;
+const newW = canvas.width / 2;
+const newH = canvas.width / 2;
 
 const ctx = canvas.getContext("2d");
 let squares = [];
-const totalSquares = 80;
-const squareSize = 20;
+const totalSquares = 40;
+const squareSize = 6;
 const gap = 5;
 
 function lerp(A, B, t) {
@@ -18,8 +22,16 @@ function lerp(A, B, t) {
 function drawSquares() {
   ctx.strokeStyle = "green";
   const newSquares = [];
-  for (let i = 0; i < totalSquares; i++) {
-    for (let j = 0; j < totalSquares; j++) {
+  for (
+    let i = -Math.floor(totalSquares / 2);
+    i < Math.floor(totalSquares / 2);
+    i++
+  ) {
+    for (
+      let j = -Math.floor(totalSquares / 2);
+      j < Math.floor(totalSquares / 2);
+      j++
+    ) {
       const x = i * (squareSize + gap);
       const y = j * (squareSize + gap);
       const square = new Square(x, y, squareSize);
@@ -68,7 +80,7 @@ class Square {
       };
     }
     ctx.beginPath();
-    ctx.arc(point.x, point.y, 2, 0, Math.PI * 2);
+    ctx.arc(point.x, point.y, 1, 0, Math.PI * 2);
     ctx.fill();
   }
   update() {
@@ -99,17 +111,19 @@ class Square {
 squares = drawSquares();
 const ln = squares.length;
 squares.forEach((square, index) => {
-  // if (index % 2 == 0) {
-  square.t = Math.abs(Math.sin(index) + Math.cos(index));
-  square.j = Math.abs(Math.cos(index) + Math.sin(index));
-  // } else {
-  // square.t = Math.abs(Math.sin(ln - index));
-  // square.j = Math.abs(Math.sin(ln - index));
-  // }
+  if (index % 2 == 0) {
+    square.t = Math.abs(Math.sin(index) + Math.cos(ln - index));
+    square.j = Math.abs(Math.cos(index));
+  } else {
+    square.t = Math.abs(Math.sin(ln - index) - Math.cos(ln - index));
+    square.j = Math.abs(Math.cos(ln - index));
+  }
 });
 function animate() {
-  ctx.clearRect(0, 0, width, height);
+  ctx.setTransform(1, 0, 0, 1, 0, 0); // reset matrix
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+  ctx.translate(canvas.width / 2, canvas.height / 2);
   ctx.fillStyle = "white";
   squares.forEach((square, index) => {
     // square.draw(ctx);
